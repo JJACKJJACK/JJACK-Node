@@ -1,0 +1,7 @@
+{ 
+  "connectionLimit": 5, 
+  "host": "localhost",
+  "user": "admin",
+  "password": "rkawk123",
+  "database": "jjack"
+}
