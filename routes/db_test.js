@@ -3,10 +3,10 @@ var pool = require('../db_pool');
 var router = express.Router();
 var moment = require('moment');
 
-router.post('/insert', function (req, res, next) {
-	var memberID = req.body.id;
-	var year = req.body.year;
-	var gender = req.body.gender;
+router.get('/insertmember', function (req, res, next) {
+	var memberID = req.query.id;
+	var year = req.query.year;
+	var gender = req.query.gender;
 	pool.query('INSERT INTO member(memberID, year, gender) VALUES(?, ?, ?)', [memberID, year, gender],  function (err) {
 		if (err) {
 			res.json({
@@ -22,9 +22,10 @@ router.post('/insert', function (req, res, next) {
 	});
 });
 
-router.post('/delete', function (req, res, next) {
-	var memberID = req.body.id;
-	pool.query('DELETE FROM member WHERE memberID=?', [memberID], function (err) {
+router.get('/insertkeyword', function (req, res, next) {
+	var keywordName = req.query.keyword;
+	var memberNum = req.query.member;
+	pool.query('INSERT INTO keyword(keywordName, memberNum) VALUES(?,?)', [keywordName, memberNum], function (err) {
 		if (err) {
 			res.json({
 				code: -1,
