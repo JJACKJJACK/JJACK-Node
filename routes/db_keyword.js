@@ -3,7 +3,7 @@ var pool = require('../db_pool');
 var router = express.Router();
 
 router.get('/ranking', function (req, res, next) {
-	pool.query('SELECT keywordName, count, @SEQ := @SEQ + 1 AS ranking FROM (SELECT keywordName AS keywordName, count(*) AS count FROM keyword GROUP BY keywordName ORDER BY count DESC) A, (SELECT @SEQ := 0) B LIMIT 0, 20', [],  function (err, rows) {
+	pool.query('SELECT keywordID, keywordName, count, @SEQ := @SEQ + 1 AS ranking FROM (SELECT keywordID AS keywordID, keywordName AS keywordName, count(*) AS count FROM keyword GROUP BY keywordName ORDER BY count DESC) A, (SELECT @SEQ := 0) B LIMIT 0, 20', [],  function (err, rows) {
 		if (err) {
 			res.json({
 				code: -1,
@@ -15,6 +15,11 @@ router.get('/ranking', function (req, res, next) {
 					code: 1,
 					message: '',
 					result: rows
+				});
+			} else {
+				res.json({
+					code: -1,
+					message: 'Empty Result'
 				});
 			}
 		}
@@ -88,16 +93,22 @@ router.get('/delete', function (req, res, next) {
 			});
 		} else {
 			var memberNum = row[0].memberNum;
-			pool.query('DELETE FROM keyword WHERE memberNum=? AND keywordName=?', [memberNum, keywordName],  function (err) {
+			pool.query('DELETE FROM keyword WHERE memberNum=? AND keywordName=?', [memberNum, keywordName], function (err, row) {
 				if (err) {
 					res.json({
 						code: -1,
 						message: err
 					});
 				} else {
+					var ret = 1;
+					var msg = '';
+					if (row.affectedRows == 0) {
+						ret = -1;
+						msg = '일치하는 정보 없음';
+					}
 					res.json({
-						code: 1,
-						message: '',
+						code: ret,
+						message: msg,
 					});
 				}
 			});

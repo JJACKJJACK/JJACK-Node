@@ -48,7 +48,7 @@ router.get('/get', function(req, res, next) {
 });
 
 router.get('/keyword', function(req, res, next) {
-	var keyword = req.query.keyword;
+	var keyword = req.query.keyword || req.query.item;
 	var start = Number(req.query.start);
 	pool.query("SELECT articleID, articleTitle, articleURL, image FROM article WHERE articleTitle LIKE '%" + keyword + "%' limit ?, 10", [start],  function (err, rows) {
 		if (err) {
@@ -57,10 +57,12 @@ router.get('/keyword', function(req, res, next) {
 				message: err
 			});
 		} else {
+			/*
 			var length = rows.length;
 			for (var i=0; i<length; i++) {
 				rows[i].submitDate = moment(rows[i].submitDate).format('YYYY-MM-DD HH:mm:ss');
 			}
+			*/
 			res.json({
 				code: 1,
 				message: '',
@@ -108,5 +110,29 @@ router.get('/keyword', function(req, res, next) {
 });
 */
 
+router.get('/category', function(req, res, next) {
+	var category = req.query.category;
+	var startIndex = Number(req.query.start);
+	var sql = "SELECT articleID, articleTitle, articleURL, image, reporter, company FROM article AS A INNER JOIN category AS B ON A.categoryID=B.categoryID WHERE mainCategory LIKE '%" + category + "%' ORDER BY articleID DESC  LIMIT ?, 10";
+	pool.query(sql, [startIndex],  function (err, rows) {
+		if (err) {
+			res.json({
+				code: -1,
+				message: err
+			});
+		} else {
+		//	if(rows.length != 0) {
+		//		for (var i=0; i<rows.length; i++) {
+		//			rows[i].submitDate = moment(rows[i].submitDate).format('YYYY-MM-DD HH:mm:ss');
+		//		}
+		//	}
+			res.json({
+				code: 1,
+				message: '',
+				result: rows
+			});
+		}
+	});
+});
 
 module.exports = router;

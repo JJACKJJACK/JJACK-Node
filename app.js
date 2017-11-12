@@ -10,6 +10,9 @@ var db_article = require('./routes/db_article');
 var db_member = require('./routes/db_member');
 var db_keyword = require('./routes/db_keyword');
 var db_scrap = require('./routes/db_scrap');
+var db_realtime = require('./routes/db_realtime');
+var db_scrap_folder = require('./routes/db_scrap_folder');
+var db_keyword_log = require('./routes/db_keyword_log');
 //var db_test = require('./routes/db_test');
 // var crawler_controller = require('./routes/crawler_controller');
 
@@ -36,6 +39,9 @@ app.use('/article', db_article);
 app.use('/member', db_member);
 app.use('/keyword', db_keyword);
 app.use('/scrap', db_scrap);
+app.use('/realtime', db_realtime);
+app.use('/folder', db_scrap_folder);
+app.use('/log', db_keyword_log);
 //app.use('/db_test', db_test);
 //app.use('/crawler', crawler_controller);
 

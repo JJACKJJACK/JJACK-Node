@@ -3,48 +3,26 @@ var pool = require('../db_pool');
 var router = express.Router();
 var moment = require('moment');
 
-router.post('/insert', function (req, res, next) {
-	var memberID = req.body.id;
-	var year = req.body.year;
-	var gender = req.body.gender;
-	pool.query('INSERT INTO member(memberID, year, gender) VALUES(?, ?, ?)', [memberID, year, gender],  function (err) {
+router.get('/list', function (req, res, next) {
+	pool.query('SELECT item, rank FROM realtime', [],  function (err, rows) {
 		if (err) {
 			res.json({
 				code: -1,
 				message: err
 			});
 		} else {
-			pool.query('SELECT memberNum FROM member WHERE memberID=?', [memberID], function (err, row) {
-				if (err) {
-					res.json({
-						code: -1,
-						message: err
-					});
-				} else {
-					var memberNum = row[0].memberNum;
-					pool.query('INSERT INTO scrap_folder(folderName, memberNum) VALUES(\'기본\', ?)', [memberNum], function (err) {
-						if (err) {
-							res.json({
-								code: -1,
-								message: err
-							});
-						} else {
-							res.json({ 
-								code: 1,
-								message: ''
-							});
-						}
-					});
-				}
+			res.json({
+				code: 1,
+				message: '',
+				result: rows
 			});
 		}
-
 	});
 });
-
+/*
 router.post('/delete', function (req, res, next) {
 	var memberID = req.body.id;
-	pool.query('UPDATE member SET memberStatus=1 WHERE memberID=?', [memberID], function (err) {
+	pool.query('DELETE FROM member WHERE memberID=?', [memberID], function (err) {
 		if (err) {
 			res.json({
 				code: -1,
@@ -80,5 +58,5 @@ router.get('/select', function (req, res, next) {
 		}
 	});
 });
-
+*/
 module.exports = router;
